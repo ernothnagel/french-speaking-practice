@@ -110,7 +110,7 @@
                           <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M11 19l-7-7H2v-4h2l7-7v20z" />
                         </svg>
                     </button>
-                    <h1 id="targetWordDisplay" class="text-4xl md:text-5xl font-extrabold text-gray-800 tracking-wider">
+                    <h1 id="targetWordDisplay" class="text-4xl md:text-5xl font-extrabold text-gray-800 tracking-wider uppercase">
                         <!-- French Word goes here -->
                     </h1>
                 </div>
@@ -169,21 +169,21 @@
     <script>
         // Vocabulary list
         const fullVocabularyList = [
-            { word: "ACHETER", hint: "to buy" },
-            { word: "VENDRE", hint: "to sell" },
-            { word: "RANGER", hint: "to pick up / put away" },
-            { word: "NETTOYER", hint: "to clean" },
-            { word: "VISITER", hint: "to visit (a place)" },
-            { word: "VENIR", hint: "to come" },
-            { word: "ALLER", hint: "to go" },
-            { word: "AIDER", hint: "to help" },
-            { word: "COURIR", hint: "to run" },
-            { word: "RIGOLER", hint: "to laugh / joke" },
-            { word: "CUISINER", hint: "to cook" },
-            { word: "MÉNAGE", hint: "housework" },
-            { word: "BONJOUR", hint: "hello" },
-            { word: "MERCI", hint: "thank you" },
-            { word: "VOITURE", hint: "car" }
+            { word: "acheter", hint: "to buy" },
+            { word: "vendre", hint: "to sell" },
+            { word: "ranger", hint: "to pick up / put away" },
+            { word: "nettoyer", hint: "to clean" },
+            { word: "visiter", hint: "to visit (a place)" },
+            { word: "venir", hint: "to come" },
+            { word: "aller", hint: "to go" },
+            { word: "aider", hint: "to help" },
+            { word: "courir", hint: "to run" },
+            { word: "rigoler", hint: "to laugh / joke" },
+            { word: "cuisiner", hint: "to cook" },
+            { word: "ménage", hint: "housework" },
+            { word: "bonjour", hint: "hello" },
+            { word: "merci", hint: "thank you" },
+            { word: "voiture", hint: "car" }
         ];
 
         const praises = ["Parfait !", "Excellent !", "Très bien !", "Magnifique !"];
@@ -355,8 +355,19 @@
         function playTargetAudio() {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(targetWord);
+                
+                // Lowercase the word so the browser doesn't treat it as an acronym
+                const textToSpeak = targetWord.toLowerCase();
+                const utterance = new SpeechSynthesisUtterance(textToSpeak);
                 utterance.lang = 'fr-FR';
+                
+                // Force the browser to specifically grab a French voice if it has one installed
+                const voices = window.speechSynthesis.getVoices();
+                const frenchVoice = voices.find(voice => voice.lang.includes('fr'));
+                if (frenchVoice) {
+                    utterance.voice = frenchVoice;
+                }
+                
                 utterance.rate = 0.85; // Slightly slower for students
                 window.speechSynthesis.speak(utterance);
             }
